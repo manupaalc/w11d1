@@ -11,24 +11,48 @@ const Form = props => {
         bio: '',
         emailNotifications: ''
     })
+    const [errors, setErrors] = useState([])
 
     const handleGenericInput = keyName => e => {
-        setUser(prev => ({ ...prev, [keyName]: e.target.value }))
+        if (keyName==="emailNotifications")
+            setUser(prev => ({ ...prev, [keyName]: e.target.checked }))
+        else
+            setUser(prev => ({ ...prev, [keyName]: e.target.value }))
     }
+    
+    const validate = () => {
+        let newErrors = []
+        if (!user.name)
+            newErrors.push("Name is required, can not be empty.");
+        
+        if(!user.email){
+            newErrors.push("Email is required, can not be empty");
+        }
+        else if (!/\S+@\S+\.\S+/.test(user.email)) {
+            newErrors.push("Email should be properly formatted");
+        }
 
+        setErrors(newErrors);
+    }
+    
     const handleSubmit = e => {
         e.preventDefault();
-        //validate();//
-        // if (errors.length) {
-
-        // } else {
+        validate();
+        if (errors.length > 0 ) {
+            alert(errors);
+        } else {
+            console.log(errors.length);
              console.log(user);
-        //     setStudent({
-        //         name: '',
-        //         email: '',
-        //         hairColour: ''
-        //     })
-        // }
+             setUser({
+                name: '',
+                email: '',
+                phoneNumber: '',
+                phoneType: '',
+                staff: '',
+                bio: '',
+                emailNotifications: ''
+            })
+        }
     }
 
     
@@ -58,7 +82,7 @@ const Form = props => {
             <textarea id="bio" type="textarea" value={user.bio} onChange={handleGenericInput('bio')}></textarea>
             <br />
             <label htmlFor="emailNotifications">Email notifications?</label>
-            <input id="emailNotifications" type="checkbox" onChange={handleGenericInput('emailNotifications')} />
+            <input id="emailNotifications" type="checkbox"value="true" checked="checked" onChange={handleGenericInput('emailNotifications')} />
             <br />
             <input type="submit" value="Create User"/>
 
